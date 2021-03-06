@@ -1,6 +1,5 @@
 package com.psl.training.assignment.beans;
 
-import java.util.Date;
 import java.util.List;
 
 public class Movies {
@@ -8,12 +7,12 @@ public class Movies {
 	private String movieName; 
 	private Category movieType;
 	private Language language; 
-	private Date releaseDate; 
+	private String releaseDate; 
 	private List<String> casting;
 	private double rating;
 	private double totalBusinessDone;
 	
-	public Movies(int movieId, String movieName, Category movieType, Language language, Date releaseDate,
+	public Movies(int movieId, String movieName, Category movieType, Language language, String releaseDate,
 			List<String> casting, double rating, double totalBusinessDone) {
 		super();
 		this.movieId = movieId;
@@ -42,7 +41,7 @@ public class Movies {
 		return language;
 	}
 
-	public Date getReleaseDate() {
+	public String getReleaseDate() {
 		return releaseDate;
 	}
 
@@ -74,7 +73,7 @@ public class Movies {
 		this.language = language;
 	}
 
-	public void setReleaseDate(Date releaseDate) {
+	public void setReleaseDate(String releaseDate) {
 		this.releaseDate = releaseDate;
 	}
 
