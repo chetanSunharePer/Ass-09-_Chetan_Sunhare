@@ -3,17 +3,21 @@ package com.psl.training.assignment.service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+
 import com.psl.training.assignment.beans.Category;
 import com.psl.training.assignment.beans.Language;
 import com.psl.training.assignment.beans.Movies;
+import com.psl.training.assignment.beans.MyDatabase;
 
 public class MovieService {
 	List<Movies> movieList = new ArrayList<>();
@@ -46,5 +50,38 @@ public class MovieService {
 		for (Movies movies : movieList) {
 			System.out.println(movies.getMovieId());
 		}
+	}
+	public boolean allAllMoviesInDb(List<Movies> movies) {
+		try {
+			Connection con = MyDatabase.getConnection();
+			for (Movies movie : movies) {
+				String movieData = "Insert INTO NEW_MOVIES VALUES(?,TO_DATE(?),?,?,?,?,?)";
+				PreparedStatement stm = con.prepareStatement(movieData);
+				stm.setInt(1, movie.getMovieId());
+				stm.setString(2, movie.getReleaseDate());
+				stm.setString(3, movie.getMovieName());
+				stm.setString(4, ""+movie.getMovieType());
+				stm.setString(5, ""+movie.getLanguage());
+				stm.setString(6, ""+movie.getRating());
+				stm.setString(7, ""+movie.getTotalBusinessDone());
+				if(stm.executeUpdate()>0) {
+					for (String cast : movie.getCasting()) {
+						String movieCasting = "Insert INTO NEW_MOVIES_CASTING VALUES(?,?)";
+						PreparedStatement stm2 = con.prepareStatement(movieCasting);
+						stm2.setInt(1, movie.getMovieId());
+						stm2.setString(2,cast);
+						stm2.executeUpdate();
+						stm2.close();
+					}	
+				}
+				stm.close();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		MyDatabase.close();
+		return true;
 	}
 }
