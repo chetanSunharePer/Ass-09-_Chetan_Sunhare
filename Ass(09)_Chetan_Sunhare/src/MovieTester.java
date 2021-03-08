@@ -1,8 +1,14 @@
 import java.io.File;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import com.psl.training.assignment.beans.Category;
+import com.psl.training.assignment.beans.Language;
 import com.psl.training.assignment.beans.Movies;
 import com.psl.training.assignment.service.MovieService;
 
@@ -19,7 +25,7 @@ public class MovieTester {
 			System.out.println("1. Read All Data From movies.txt\n"
 					+ "2. Display All Data From local movie list\n"
 					+ "3. Insert all movie data into Database\n"
-					+ "4. Fetch data from databse and display\n"
+					+ "4. Add New Movie\n"
 					+ "5. Find Movies Redleased in Year\n"
 					+ "6. Exit ");
 			int choice = Integer.parseInt(sc.nextLine());
@@ -41,6 +47,28 @@ public class MovieTester {
 				}catch (Exception e) {
 					System.out.println("Insert Data First");
 				}
+				break;
+			case 4:
+				DateFormat format= new SimpleDateFormat("dd/MM/yyyy");
+				System.out.println("Enter Movie ID : ");
+				int movieId = Integer.parseInt(sc.nextLine());
+				System.out.println("Enter Movie Name : ");
+				String movieName = sc.nextLine();
+				System.out.println("Enter Movie Category : ");
+				Category movieType = Category.valueOf(sc.nextLine().toUpperCase());
+				System.out.println("Enter Movie Language : ");
+				Language language = Language.valueOf(sc.nextLine().toUpperCase());
+				System.out.println("Enter Movie Release Date (DD/MM/YYYY) : ");
+				String releaseDate = format.format(format.parse(sc.nextLine()));
+				ArrayList<String> casting = new ArrayList<>();
+				System.out.println("Enter Movie Cast (Seperate names by '/' ) : ");
+				casting.addAll(Arrays.asList(sc.nextLine().split("/")));
+				System.out.println("Enter Movie Ratings (between 0 - 10) : ");
+				double rating = Double.valueOf(sc.nextLine());
+				System.out.println("Enter Movie total Business Done ( In Billions ): ");
+				double totalBusinessDone = Double.valueOf(sc.nextLine());
+				Movies movie = new Movies(movieId, movieName, movieType, language, releaseDate, casting, rating, totalBusinessDone);
+				service.addMovie(movie, movieList);
 				break;
 			case 5:
 				System.out.println("Enter Year : ");

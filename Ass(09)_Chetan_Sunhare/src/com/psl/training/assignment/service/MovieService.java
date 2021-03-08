@@ -52,6 +52,36 @@ public class MovieService {
 			
 		}
 	}
+	public void addMovie(Movies movie,List<Movies> movieList) {
+		try 
+		{
+			Connection con=MyDatabase.getConnection();
+			String movieData = "Insert INTO NEW_MOVIES VALUES(?,TO_DATE(?),?,?,?,?,?)";
+			PreparedStatement stm = con.prepareStatement(movieData);
+			stm.setInt(1, movie.getMovieId());
+			stm.setString(2, movie.getReleaseDate());
+			stm.setString(3, movie.getMovieName());
+			stm.setString(4, ""+movie.getMovieType());
+			stm.setString(5, ""+movie.getLanguage());
+			stm.setString(6, ""+movie.getRating());
+			stm.setString(7, ""+movie.getTotalBusinessDone());
+			if(stm.executeUpdate()>0) {
+				for (String cast : movie.getCasting()) {
+					String movieCasting = "Insert INTO NEW_MOVIES_CASTING VALUES(?,?)";
+					PreparedStatement stm2 = con.prepareStatement(movieCasting);
+					stm2.setInt(1, movie.getMovieId());
+					stm2.setString(2,cast);
+					stm2.executeUpdate();
+					stm2.close();
+				}	
+			}
+			stm.close();
+		} 
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public void Display() {
 		System.out.println("All moives : ");
 		System.out.println();
