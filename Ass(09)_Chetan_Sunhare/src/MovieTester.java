@@ -20,7 +20,8 @@ public class MovieTester {
 					+ "2. Display All Data From local movie list\n"
 					+ "3. Insert all movie data into Database\n"
 					+ "4. Fetch data from databse and display\n"
-					+ "5. Exit ");
+					+ "5. Find Movies Redleased in Year\n"
+					+ "6. Exit ");
 			int choice = Integer.parseInt(sc.nextLine());
 			switch (choice) {
 			case 1:
@@ -42,7 +43,13 @@ public class MovieTester {
 				}
 				break;
 			case 5:
+				System.out.println("Enter Year : ");
+				int year = Integer.parseInt(sc.nextLine());
+				List<Movies> movieList1 = service.getMoviesRealeasedInYear(year);
+				break;
+			case 6:
 				check = false;
+				System.out.println("Exiting");
 				break;
 			default:
 				break;
