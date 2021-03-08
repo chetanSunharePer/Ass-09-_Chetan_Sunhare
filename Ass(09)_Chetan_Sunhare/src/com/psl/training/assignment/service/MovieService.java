@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -61,11 +63,31 @@ public class MovieService {
 			outputStream.writeObject(movies);
 			outputStream.flush();
 			outputStream.close();
+			System.out.println("Serialization is sucessfully");
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+	public List<Movies> deserializeMovie(String filename){
+		List<Movies> movieList1 = new ArrayList<>();
+		FileInputStream fs ;
+		ObjectInputStream in;
+		try {
+			fs = new FileInputStream(filename);
+			in = new ObjectInputStream(fs);
+			movieList1.addAll((Collection<? extends Movies>) in.readObject());
+			
+			for (Movies movies : movieList1) {
+				System.out.println(movies.getMovieId()+" "+movies.getMovieName());
+			}
+			System.out.println("Deserialization is sucessfully");
+		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		return movieList1;
 	}
 	public void addMovie(Movies movie,List<Movies> movieList) {
 		try 
@@ -92,6 +114,7 @@ public class MovieService {
 					stm2.close();
 				}	
 			}
+			deserializeMovie(fileName);
 			stm.close();
 		} 
 		catch (SQLException e) {
@@ -99,6 +122,8 @@ public class MovieService {
 			e.printStackTrace();
 		}
 	}
+	
+	
 	public void Display() {
 		System.out.println("All moives : ");
 		System.out.println();
@@ -125,7 +150,6 @@ public class MovieService {
 				PreparedStatement stm = con.prepareStatement(movieData);
 				stm.setInt(1, movie.getMovieId());
 				stm.setString(2, movie.getReleaseDate());
-				System.out.println(movie.getReleaseDate());
 				stm.setString(3, movie.getMovieName());
 				stm.setString(4, ""+movie.getMovieType());
 				stm.setString(5, ""+movie.getLanguage());
@@ -142,6 +166,7 @@ public class MovieService {
 					}	
 				}
 				stm.close();
+				deserializeMovie(fileName);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
