@@ -1,8 +1,9 @@
 package com.psl.training.assignment.beans;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Movies {
+public class Movies  implements Serializable{
 	private int movieId; 
 	private String movieName; 
 	private Category movieType;

@@ -3,6 +3,9 @@ package com.psl.training.assignment.service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,8 +23,10 @@ import com.psl.training.assignment.beans.Language;
 import com.psl.training.assignment.beans.Movies;
 import com.psl.training.assignment.beans.MyDatabase;
 
+import javafx.scene.input.KeyCombination.ModifierValue;
 public class MovieService {
 	List<Movies> movieList = new ArrayList<>();
+	String fileName = "D:\\java\\ELTP_Training\\Ass-09-_Chetan_Sunhare\\Ass(09)_Chetan_Sunhare\\serializeFile.txt";
 	public List<Movies> populateMovies(File file) throws ParseException {
 		
 		try(Scanner sc=new Scanner(new FileInputStream(file))) {
@@ -40,21 +45,33 @@ public class MovieService {
 				movieList.add(new Movies(movieId, movieName, movieType, language, releaseDate, casting, rating, totalBusinessDone));
 				
 			}
-			
+			serializeMovies(movieList, fileName);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return movieList;
 	}
-	public void serialize(Movies mo,File path) {
-		for (Movies movies : movieList) {
-			
+	public void serializeMovies(List<Movies> movies, String fileName) {
+		FileOutputStream fs;
+		ObjectOutputStream outputStream;
+		try {
+			fs = new FileOutputStream(fileName);
+			outputStream = new ObjectOutputStream(fs);
+			outputStream.writeObject(movies);
+			outputStream.flush();
+			outputStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 	}
 	public void addMovie(Movies movie,List<Movies> movieList) {
 		try 
 		{
+			movieList.add(movie);
+			serializeMovies(movieList, fileName);
 			Connection con=MyDatabase.getConnection();
 			String movieData = "Insert INTO NEW_MOVIES VALUES(?,TO_DATE(?),?,?,?,?,?)";
 			PreparedStatement stm = con.prepareStatement(movieData);
